@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 可控聊天应用 (Controllable Chat)
 
-## Getting Started
+这是一个基于 Next.js、Prisma 和 LangChain 构建的智能聊天应用，允许用户自定义使用的大语言模型。
 
-First, run the development server:
+## 技术栈
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **前端框架**: Next.js 14 (App Router)
+- **数据库 ORM**: Prisma
+- **AI 集成**: LangChain
+- **开发工具**: Cursor AI (使用 Claude-3.7-sonnet 模型辅助开发)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 主要功能
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 创建和管理多个对话
+- 实时聊天界面，支持思考状态显示
+- 对话历史记录保存和浏览
+- 响应式设计，适配不同设备
+- 支持用户自定义选择大语言模型
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 项目结构
 
-## Learn More
+- `/app`: Next.js 应用路由和页面组件
+- `/components`: 可复用的 UI 组件
+- `/lib`: 工具函数和数据库连接
+- `/prisma`: 数据库模型和迁移文件
 
-To learn more about Next.js, take a look at the following resources:
+## 本地开发
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. 克隆仓库
+2. 安装依赖: `npm install`
+3. 配置环境变量
+4. 初始化数据库: `npx prisma migrate dev`
+5. 启动开发服务器: `npm run dev`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 数据模型
 
-## Deploy on Vercel
+应用主要包含两个核心数据模型:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `Conversation`: 对话容器
+- `Message`: 单条消息，包含用户和 AI 的回复
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 贡献指南
+
+欢迎提交 Pull Request 或创建 Issue 来改进这个项目。
+
+## 许可证
+
+MIT
+
