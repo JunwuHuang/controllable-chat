@@ -9,7 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@langchain/deepseek": "^0.0.1",
     "@prisma/client": "^6.4.1",
+    "langchain": "^0.3.19",
     "next": "15.1.7",
     "prisma": "^6.4.1",
     "react": "^19.0.0",

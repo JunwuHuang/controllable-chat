@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+// import { redirect } from "next/navigation"; // 删除未使用的导入
 import { revalidatePath } from "next/cache";
 
 export async function createConversation() {
@@ -30,6 +30,8 @@ export async function createConversation() {
 }
 
 export async function createMessage(conversationId: string, content: string) {
+  let aiMessage;  // 在try块外部声明aiMessage变量
+  
   try {
     // 创建用户消息
     await prisma.message.create({
@@ -41,7 +43,7 @@ export async function createMessage(conversationId: string, content: string) {
     });
     
     // 创建AI响应消息(思考状态)
-    const aiMessage = await prisma.message.create({
+    aiMessage = await prisma.message.create({
       data: {
         sender: 'AI',
         content: '',
@@ -58,11 +60,39 @@ export async function createMessage(conversationId: string, content: string) {
     
     revalidatePath(`/conversations/${conversationId}`);
     
+    // 调用API端点生成AI响应
+    try {
+      console.log(`开始调用API生成AI响应，对话ID: ${conversationId}`);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/conversations/${conversationId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-from-server-action': 'true'
+        },
+        body: JSON.stringify({ content }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`API响应错误: ${response.status}`);
+      }
+      
+      console.log(`API调用成功，对话ID: ${conversationId}`);
+    } catch (apiError) {
+      console.error('调用AI响应API失败:', apiError);
+      // 即使API调用失败，我们仍然返回成功
+      // 这样前端可以继续处理已创建的消息
+    }
+    
     // 返回消息ID，让客户端处理轮询或WebSocket监听
-    return { success: true, messageId: aiMessage.id };
+    if (aiMessage && aiMessage.id) {
+      return { success: true, messageId: aiMessage.id };
+    } else {
+      console.error('AI消息创建成功但ID不可用');
+      return { success: false, error: 'AI消息ID不可用' };
+    }
   } catch (error) {
     console.error('发送消息失败', error);
-    return { success: false };
+    return { success: false, error: '发送消息失败' };
   }
 }
 
